@@ -1,0 +1,14 @@
+Hi {username}
+
+Thanks for joining {app name}! Please confirm your email address and activate your account with the following code:
+
+{activation code}
+
+If you have any trouble with your account, you can always email us at {}.
+
+Regards,
+
+The {app name} team
+
+If you didn't register for {app name}, please ignore this message.
+
