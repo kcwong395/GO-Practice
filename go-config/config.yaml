@@ -1,0 +1,7 @@
+# This configuration file shall not be pushed to github
+# Uploading this file just serves as a demo purpose
+app-version: v1.2.5
+
+database-credential:
+  username: admin
+  password: pa55w0rd
