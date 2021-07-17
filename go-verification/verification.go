@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-redis/redis/v8"
+	"log"
 	"math/rand"
 	"strconv"
 	"time"
@@ -21,15 +21,18 @@ func addPaddingZero(code string) string {
 }
 
 // Generate a random 6 digits number and map to an emailAddr
-func (v *Verifier) GenerateCode(emailAddr string) string {
+func (v *Verifier) GenerateCode(emailAddr string) (string, error) {
 	// generate random number with seed
 	rand.Seed(time.Now().UnixNano())
 	// the generated code ranges 000000 - 999999
 	code := addPaddingZero(strconv.Itoa(rand.Intn(1000000)))
 
 	// the key is only valid for 3 seconds
-	v.rdb.Set(context.Background(), emailAddr, code, 3*time.Second)
-	return code
+	err := v.rdb.Set(context.Background(), emailAddr, code, 3*time.Second).Err()
+	if err != nil {
+		log.Panicln(err)
+	}
+	return code, err
 }
 
 func (v *Verifier) Verification(emailAddr string, claimedCode string) bool {
@@ -37,6 +40,5 @@ func (v *Verifier) Verification(emailAddr string, claimedCode string) bool {
 	if err != redis.Nil && err == nil {
 		return code == claimedCode
 	}
-	fmt.Println("Code expired or wrong email")
 	return false
 }
