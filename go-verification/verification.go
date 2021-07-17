@@ -27,6 +27,7 @@ func (v *Verifier) GenerateCode(emailAddr string) string {
 	// the generated code ranges 000000 - 999999
 	code := addPaddingZero(strconv.Itoa(rand.Intn(1000000)))
 
+	// the key is only valid for 3 seconds
 	v.rdb.Set(context.Background(), emailAddr, code, 3*time.Second)
 	return code
 }
