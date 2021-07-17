@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"testing"
 	"time"
 )
@@ -13,16 +13,20 @@ import (
 	--- PASS: Test1 (0.02s)
 */
 func Test1(t *testing.T) {
-	rdb := Init()
+	rdb, err := Init()
+	if err != nil {
+		log.Panicln(err)
+	}
 
 	v := Verifier{rdb: rdb}
-	code := v.GenerateCode("example@example.com")
-	fmt.Printf("Generated code: %s \n", code)
+	code, err := v.GenerateCode("example@example.com")
+	if err != nil {
+		t.Errorf("Failed to generate code")
+	}
 
-	// this shall pass
-	res := v.Verification("example@example.com", code)
-	if res != true {
-		t.Errorf("Expected to match")
+	isValid := v.Verification("example@example.com", code)
+	if !isValid {
+		t.Errorf("Expected to pass")
 	}
 }
 
@@ -31,12 +35,16 @@ func Test1(t *testing.T) {
 	--- PASS: Test2 (0.00s)
 */
 func Test2(t *testing.T) {
-	rdb := Init()
+	rdb, err := Init()
+	if err != nil {
+		log.Panicln(err)
+	}
+
 	v := Verifier{rdb: rdb}
 
 	// this shall fail
-	res := v.Verification("example@example.com", "1000000000")
-	if res != false {
+	isValid := v.Verification("example@example.com", "1000000000")
+	if isValid {
 		t.Errorf("Expected to fail")
 	}
 }
@@ -48,18 +56,21 @@ func Test2(t *testing.T) {
 	--- PASS: Test3 (5.01s)
 */
 func Test3(t *testing.T) {
+	rdb, err := Init()
+	if err != nil {
+		log.Panicln(err)
+	}
 
-	rdb := Init()
 	v := Verifier{rdb: rdb}
 
 	code, _ := rdb.Get(context.Background(), "example@example.com").Result()
-	fmt.Println(code)
 
+	// wait until expire
 	time.Sleep(5 * time.Second)
 
 	// this shall fail
-	res := v.Verification("example@example.com", code)
-	if res != false {
+	isValid := v.Verification("example@example.com", code)
+	if isValid {
 		t.Errorf("Expected to fail")
 	}
 }
