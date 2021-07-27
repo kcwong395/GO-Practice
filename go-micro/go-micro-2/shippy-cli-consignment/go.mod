@@ -1,4 +1,4 @@
-module go-micro-1/shippy-cli-consignment
+module go-micro-2/shippy-cli-consignment
 
 go 1.16
 

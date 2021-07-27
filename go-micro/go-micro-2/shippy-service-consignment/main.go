@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	pb "go-micro-1/shippy-service-consignment/proto/consignment"
+	pb "go-micro-2/shippy-service-consignment/proto/consignment"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
