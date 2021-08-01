@@ -3,15 +3,14 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"github.com/micro/go-micro/v2"
 	pb "go-micro-2/shippy-cli-consignment/proto/consignment"
-	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
 	"os"
 )
 
 const (
-	address         = "localhost:50051"
 	defaultFilename = "consignment.json"
 )
 
@@ -26,13 +25,12 @@ func parseFile(file string) (*pb.Consignment, error) {
 }
 
 func main() {
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	service := micro.NewService(micro.Name("shippy.consignment.cli"))
+	service.Init()
 
-	if err != nil {
-		log.Fatalf("Did not connect: %v", err)
-	}
-	defer conn.Close()
-	client := pb.NewShippingServiceClient(conn)
+	// The original tutorial should have a type here,
+	// it should be shippy.service.consignment rather than shippy.consignment.service
+	client := pb.NewShippingService("shippy.service.consignment", service.Client())
 
 	file := defaultFilename
 	if len(os.Args) > 1 {
