@@ -28,7 +28,7 @@ func main() {
 	service := micro.NewService(micro.Name("shippy.consignment.cli"))
 	service.Init()
 
-	// The original tutorial should have a type here,
+	// The original tutorial should have a typo here,
 	// it should be shippy.service.consignment rather than shippy.consignment.service
 	client := pb.NewShippingService("shippy.service.consignment", service.Client())
 
